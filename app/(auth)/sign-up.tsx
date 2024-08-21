@@ -5,6 +5,7 @@ import InputField from "@/components/InputField";
 import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { Link } from "expo-router";
+import OAuth from "@/components/Oauth";
 
 
 const SignUp = () => {
@@ -66,6 +67,7 @@ const SignUp = () => {
           />
 
           {/* OAuth */}
+          <OAuth />
 
           <Link
             href="/sign-in"
@@ -74,8 +76,9 @@ const SignUp = () => {
             Already have an account?{" "}
             <Text className="text-primary-500">Log In</Text>
           </Link>
-
         </View>
+
+        {/* Verification modal */}
 
       </View>
     </ScrollView>
