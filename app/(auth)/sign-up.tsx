@@ -1,4 +1,4 @@
-import { Image, ScrollView, Text, View } from "react-native"
+import { Alert, Image, ScrollView, Text, View } from "react-native"
 import { icons, images } from "@/constants";
 import InputField from "@/components/InputField";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import ReactNativeModal from "react-native-modal";
 const SignUp = () => {
 
   const { isLoaded, signUp, setActive } = useSignUp();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const [verification, setVerification] = useState({
     state: 'default',
@@ -26,48 +27,49 @@ const SignUp = () => {
   });
 
 
-  const onSignUpPress = async () => {
+  const onSignUpPress = async () => { // Se activa desde el boton de submit y recibe el state del form
     if (!isLoaded) {
       return
     }
 
     try {
-      await signUp.create({
+      await signUp.create({           // Lo envía a Clerk
         emailAddress: form.email,
         password: form.password,
       })
 
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })  // Clerk envía un email con un código
 
-      setVerification({
+      setVerification({               // Se establece el estate de verification como 'pending'
         ...verification,
         state: 'pending'
       })
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2))
+      Alert.alert("Error", err.errors[0].longMessage);
     }
   }
 
-  const onPressVerify = async () => {
+  const onPressVerify = async () => { // Se activa desde el boton del modal de verificación
     if (!isLoaded) return
 
     try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
+      const completeSignUp = await signUp.attemptEmailAddressVerification({ // Recoge el state de ver.code y lo envía a clerk
         code: verification.code,
       })
 
-      if (completeSignUp.status === 'complete') {
+      if (completeSignUp.status === 'complete') {                           // Clerk devuelve un status -> modifica states de verification                     
         //TODO: Create a database user
         await setActive({ session: completeSignUp.createdSessionId })
         setVerification({
           ...verification,
-          state: 'success'
+          state: 'success'  // "pending"  -> modal -> código -> "success" -> showmodal=true -> modal ok
         })
       } else {
         setVerification({
           ...verification,
           error: 'Verification failed',
-          state: 'failed'
+          state: 'failed'   // "pending"  -> modal -> código -> "failed" -> showmodal=false -> modal error
         })
       }
     } catch (err: any) {
@@ -93,7 +95,7 @@ const SignUp = () => {
         </View>
 
         <View className="p-5">
-          {/* Los InputField modifican el state */}
+          {/* Los InputField modifican el state del form*/}
           <InputField
             label="Name"
             placeholder="Enter your name"
@@ -119,7 +121,7 @@ const SignUp = () => {
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
 
-          {/* Los CustonButton llaman a funciones que trabajan con los states modificados por los inputs */}
+          {/* Los CustonButton llaman a funciones que trabajan con los states del form */}
           <CustomButton
             title="Sign Up"
             onPress={onSignUpPress}
@@ -140,9 +142,11 @@ const SignUp = () => {
 
         {/* Verification modal */}
         <ReactNativeModal 
-          isVisible={verification.state === "pending"}
-          onModalHide={() => {
-           setVerification({ ...verification, state: "success"})
+          isVisible={verification.state === "pending"}    // Se muestra este modal si ver.state="pending"
+          onModalHide={() => {                            // Cuando el modal se oculta 
+            if(verification.state === 'success'){         // se verifica que el ver.state="success"
+              setShowSuccessModal(true)                   // si es así showSuccessModal=true
+            }
           }}
         >
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
@@ -177,7 +181,7 @@ const SignUp = () => {
 
 
         <ReactNativeModal
-          isVisible={verification.state === 'success'}
+          isVisible={showSuccessModal}
         >
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Image 
@@ -192,7 +196,10 @@ const SignUp = () => {
             </Text>
             <CustomButton
               title="Browse Home"
-              onPress={() => router.push(`/(root)/(tabs)/home`)}
+              onPress={() => {
+                setShowSuccessModal(false)
+                router.push(`/(root)/(tabs)/home`)
+              }}
               className="mt-5"
             />
           </View>
