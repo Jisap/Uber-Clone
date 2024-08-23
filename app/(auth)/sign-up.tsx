@@ -14,7 +14,7 @@ const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
 
   const [verification, setVerification] = useState({
-    state: 'pending',
+    state: 'default',
     error: '',
     code: '',
   });
@@ -93,6 +93,7 @@ const SignUp = () => {
         </View>
 
         <View className="p-5">
+          {/* Los InputField modifican el state */}
           <InputField
             label="Name"
             placeholder="Enter your name"
@@ -118,6 +119,7 @@ const SignUp = () => {
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
 
+          {/* Los CustonButton llaman a funciones que trabajan con los states modificados por los inputs */}
           <CustomButton
             title="Sign Up"
             onPress={onSignUpPress}
@@ -137,6 +139,43 @@ const SignUp = () => {
         </View>
 
         {/* Verification modal */}
+        <ReactNativeModal 
+          isVisible={verification.state === "pending"}
+          onModalHide={() => {
+           setVerification({ ...verification, state: "success"})
+          }}
+        >
+          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
+            <Text className="font-JakartaExtraBold text-2xl mb-2">
+              Verification
+            </Text>
+            <Text className="font-Jakarta mb-5">
+              We've sent a verification code to {form.email}.
+            </Text>
+            <InputField
+              label={"Code"}
+              icon={icons.lock}
+              placeholder={"12345"}
+              value={verification.code}
+              keyboardType="numeric"
+              onChangeText={(code) =>
+                setVerification({ ...verification, code })
+              }
+            />
+            {verification.error && (
+              <Text className="text-red-500 text-sm mt-1">
+                {verification.error}
+              </Text>
+            )}
+            <CustomButton
+              title="Verify Email"
+              onPress={onPressVerify}
+              className="mt-5 bg-success-500"
+            />
+          </View>
+        </ReactNativeModal>
+
+
         <ReactNativeModal
           isVisible={verification.state === 'success'}
         >
