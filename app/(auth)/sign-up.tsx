@@ -14,7 +14,7 @@ const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
 
   const [verification, setVerification] = useState({
-    state: 'success',
+    state: 'pending',
     error: '',
     code: '',
   });
