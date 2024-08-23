@@ -1,13 +1,11 @@
 import { Image, ScrollView, Text, View } from "react-native"
-import signUpCar from '@/assets/images/signup-car.png';
 import { icons, images } from "@/constants";
 import InputField from "@/components/InputField";
 import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import OAuth from "@/components/Oauth";
 import { useSignUp } from "@clerk/clerk-expo";
-import { useRouter } from 'expo-router'
 import ReactNativeModal from "react-native-modal";
 
 
@@ -146,6 +144,17 @@ const SignUp = () => {
             <Image 
               source={images.check}
               className="w-[110px] h-[110px] mx-auto my-5" 
+            />
+            <Text className="text-3xl font-JakartaBold text-center">
+              Verified
+            </Text>
+            <Text className="text-base text-gray-400 font-Jakarta text-center mt-2">
+              You have successfully verified your account.
+            </Text>
+            <CustomButton
+              title="Browse Home"
+              onPress={() => router.push(`/(root)/(tabs)/home`)}
+              className="mt-5"
             />
           </View>
         </ReactNativeModal>
