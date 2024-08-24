@@ -7,6 +7,7 @@ import { Link, router } from "expo-router";
 import OAuth from "@/components/Oauth";
 import { useSignUp } from "@clerk/clerk-expo";
 import ReactNativeModal from "react-native-modal";
+import { fetchAPI } from "@/lib/fetch";
 
 
 const SignUp = () => {
@@ -59,7 +60,16 @@ const SignUp = () => {
       })
 
       if (completeSignUp.status === 'complete') {                           // Clerk devuelve un status -> modifica states de verification                     
-        //TODO: Create a database user
+        
+        await fetchAPI('/(api)/user', {                                     // Creamos user en base de datos
+          method: "POST",
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            clerkId: completeSignUp.createdUserId
+          })  
+        })
+
         await setActive({ session: completeSignUp.createdSessionId })
         setVerification({
           ...verification,
