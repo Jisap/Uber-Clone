@@ -147,7 +147,7 @@ const Home = () => {
           <>
             <View className="flex flex-row items-center justify-between my-5">
               <Text className="text-2xl font-JakartaExtraBold">
-                Welcome { user?.firstName  }👋
+                Welcome{", "}{ user?.firstName || user?.emailAddresses[0].emailAddress.split("@")[0] }{" "}👋
               </Text>
               <TouchableOpacity
                 onPress={handleSignOut}
@@ -156,6 +156,8 @@ const Home = () => {
                 <Image source={icons.out} className="w-4 h-4" />
               </TouchableOpacity>
             </View>
+
+            {/* GoogleTextInput */}
           </>
         }
       />
