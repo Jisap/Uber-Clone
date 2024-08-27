@@ -2,10 +2,13 @@ import GoogleTextInput from '@/components/GoogleTextInput'
 import Map from '@/components/Map'
 import RideCard from '@/components/RideCard'
 import { icons, images } from '@/constants'
+import { useLocationStore } from '@/store'
 import { SignedIn, SignedOut, useAuth, useUser } from '@clerk/clerk-expo'
 import { Link, router } from 'expo-router'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import * as Location from "expo-location";
 
 const recentRides = [
   {
@@ -108,9 +111,35 @@ const recentRides = [
 
 const Home = () => {
 
+  const { setUserLocation, setDestinationLocation } = useLocationStore();
   const { user } = useUser()
   const { signOut } = useAuth()
   const loading = false;
+
+  const [hasPermission, setHasPermission] = useState(false)
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();  // Solicita permiso al usuario para acceder a su ubicación
+      if (status !== "granted") {                                           // Si el permiso fue denegado return
+        setHasPermission(false);
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});            // Si el permiso fue concedido se obtiene del movil la ubicación actual del usuario. 
+
+      const address = await Location.reverseGeocodeAsync({                  // Se convierten esas coordenadas en una dirección legible 
+        latitude: location.coords?.latitude!,
+        longitude: location.coords?.longitude!,
+      });
+
+      setUserLocation({                                                     // Se actualiza el estado con la nueva ubicación del usuario.
+        latitude: location.coords?.latitude,
+        longitude: location.coords?.longitude,
+        address: `${address[0].name}, ${address[0].region}`,
+      });
+    })();
+  }, []);
 
   const handleSignOut = () => {
     signOut();
