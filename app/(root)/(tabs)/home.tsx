@@ -133,7 +133,7 @@ const Home = () => {
         longitude: location.coords?.longitude!,
       });
 
-      setUserLocation({                                                     // Se actualiza el estado con la nueva ubicación del usuario.
+      setUserLocation({                                                     // Se actualiza el store con la nueva ubicación del usuario.
         latitude: location.coords?.latitude,
         longitude: location.coords?.longitude,
         address: `${address[0].name}, ${address[0].region}`,
@@ -204,6 +204,7 @@ const Home = () => {
                   <Map />
                 </View>
               </>
+
               <Text className='text-xl font-JakartaBold mt-5 mb-3'>
                 Recent Rides
               </Text>
