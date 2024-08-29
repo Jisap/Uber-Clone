@@ -3,7 +3,8 @@ import { calculateRegion, generateMarkersFromData } from "@/lib/map";
 import { useDriverStore, useLocationStore } from "@/store";
 import { MarkerData } from "@/types/type";
 import { useEffect, useState } from "react";
-import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps"
+import { Text, View } from "react-native";
+import MapView, { Marker, PROVIDER_DEFAULT, Region } from "react-native-maps"
 
 const drivers = [
   {
@@ -42,7 +43,8 @@ const drivers = [
     "car_seats": 4,
     "rating": "4.90"
   }
-]
+];
+
 
 const Map = () => {
 
@@ -56,6 +58,9 @@ const Map = () => {
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
+  const [mapRegion, setMapRegion] = useState<Region | null>(null);
+
+  
   const [region, setRegion] = useState<{
     latitude: number;
     longitude: number;
@@ -72,7 +77,9 @@ const Map = () => {
     })
     console.log('region',newRegion);
     setRegion(newRegion)
-  },[userLatitude, userLongitude,destinationLatitude, destinationLongitude])
+  },[userLatitude, userLongitude, destinationLatitude, destinationLongitude])
+
+  
 
   useEffect(() => {
     if (Array.isArray(drivers)) {                             // Genera de forma aleatoria la posición de los drivers entorno a la del usuario
