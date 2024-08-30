@@ -87,6 +87,9 @@ const Map = () => {
   
 
   useEffect(() => {
+    //TODO: Remove
+    setDrivers(drivers)
+
     if (Array.isArray(drivers)) {                             // Genera de forma aleatoria la posición de los drivers entorno a la del usuario
       if (!userLatitude || !userLongitude) return;
 

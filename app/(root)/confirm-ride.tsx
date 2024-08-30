@@ -5,10 +5,11 @@ import { useDriverStore } from '@/store';
 import { router } from 'expo-router';
 import { FlatList, Text, View } from 'react-native'
 
+
 const ConfirmRide = () => {
 
   const { drivers, selectedDriver, setSelectedDriver } = useDriverStore();
-
+  
   return (
     <RideLayout title={"Choose a Rider"} snapPoints={["65%", "85%"]}>
       <FlatList
