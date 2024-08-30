@@ -3,8 +3,8 @@ import Map from '@/components/Map'
 import RideCard from '@/components/RideCard'
 import { icons, images } from '@/constants'
 import { useLocationStore } from '@/store'
-import { SignedIn, SignedOut, useAuth, useUser } from '@clerk/clerk-expo'
-import { Link, router } from 'expo-router'
+import { useAuth, useUser } from '@clerk/clerk-expo'
+import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -149,7 +149,15 @@ const Home = () => {
     router.replace("/(auth)/sign-in");
   }
 
-  const handleDestinationPress = () => {}
+  const handleDestinationPress = (location: {   // Cuando ponemos un destino en la barra de busqueda <GoogleTextInput /> establecemos las coordenadas de destino
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => {
+
+    setDestinationLocation(location);
+    router.push("/(root)/find-ride");
+  }
 
   return (
     <SafeAreaView className='bg-general-500'>
