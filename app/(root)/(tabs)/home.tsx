@@ -109,11 +109,6 @@ const recentRides = [
   }
 ]
 
-type UserLocationType = {
-  latitude: number;
-  longitude: number;
-  address: string;
-};
 
 const Home = () => {
 
@@ -123,8 +118,6 @@ const Home = () => {
   const loading = false;
 
   const [hasPermission, setHasPermission] = useState(false)
-  const [userLocation, setUserLocationState] = useState<{ latitude: number; longitude: number } | null>(null)
-
 
   useEffect(() => {
     (async () => {

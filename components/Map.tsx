@@ -2,9 +2,9 @@ import { icons } from "@/constants";
 import { calculateRegion, generateMarkersFromData } from "@/lib/map";
 import { useDriverStore, useLocationStore } from "@/store";
 import { MarkerData } from "@/types/type";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
-import MapView, { Marker, PROVIDER_DEFAULT, Region } from "react-native-maps"
+import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps"
 
 const drivers = [
   {
@@ -58,7 +58,7 @@ const Map = () => {
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
-  const [mapRegion, setMapRegion] = useState<Region | null>(null);
+  const mapRef = useRef<MapView>(null);
 
   
   const [region, setRegion] = useState<{
@@ -77,6 +77,11 @@ const Map = () => {
     })
     console.log('region',newRegion);
     setRegion(newRegion)
+
+    if (mapRef.current && newRegion) {
+      mapRef.current.animateToRegion(newRegion, 1000);
+    }
+
   },[userLatitude, userLongitude, destinationLatitude, destinationLongitude])
 
   
@@ -97,12 +102,13 @@ const Map = () => {
 
   return (
     <MapView
+      ref={mapRef}
       provider={PROVIDER_DEFAULT}
       className="w-full h-full rounded-2xl"
       tintColor="black"
       mapType="mutedStandard"
       showsPointsOfInterest={false}
-      initialRegion={region}
+      initialRegion={region}   
       showsUserLocation={true}
       userInterfaceStyle="light"
     >
