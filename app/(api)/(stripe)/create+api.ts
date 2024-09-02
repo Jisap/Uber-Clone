@@ -2,7 +2,7 @@ import { Stripe } from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export async function POST(request: Request) {                                    // función de API que maneja las solicitudes POST para iniciar el proceso de pago.
+export async function POST(request: Request) {                                    // Función de API que maneja las solicitudes POST para iniciar el proceso de pago.
   const body = await request.json();                                              
   const { name, email, amount } = body;                                           // Se extraen name, email, y amount del cuerpo de la solicitud.
 

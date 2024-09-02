@@ -43,7 +43,7 @@ const Payment = ({
           currencyCode: "usd",
         },
         confirmHandler: async (                   // confirmHandler maneja el proceso de pago  
-          paymentMethod,
+          paymentMethod,                          // el método de pago es seleccionado por el user en la ventana del initPaymentSheet
           shouldSavePaymentMethod,
           intentCreationCallback,
         ) => {
