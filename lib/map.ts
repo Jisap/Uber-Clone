@@ -96,13 +96,16 @@ export const calculateDriverTimes = async ({
     return;
 
   try {
+    //Mapeo de markers -> [promises] donde cada promesa representa el cálculo de tiempo y precio para un marcador específico.
     const timesPromises = markers.map(async (marker) => {
+      // Para cada marcador, se realiza una petición a la API de Google Maps para obtener las direcciones desde el marcador hasta el usuario 
       const responseToUser = await fetch(
         `https://maps.googleapis.com/maps/api/directions/json?origin=${marker.latitude},${marker.longitude}&destination=${userLatitude},${userLongitude}&key=${directionsAPI}`,
       );
       const dataToUser = await responseToUser.json();
       const timeToUser = dataToUser.routes[0].legs[0].duration.value; // Time in seconds
 
+      // Se realiza otra petición para obtener las direcciones desde el usuario hasta el destino
       const responseToDestination = await fetch(
         `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`,
       );
@@ -116,7 +119,8 @@ export const calculateDriverTimes = async ({
       return { ...marker, time: totalTime, price };
     });
 
-    return await Promise.all(timesPromises);
+    // Se retorna un nuevo objeto que incluye la información original del marcador (marker), el tiempo total en minutos (time) y el precio calculado (price).
+    return await Promise.all(timesPromises);  
   } catch (error) {
     console.error("Error calculating driver times:", error);
   }
