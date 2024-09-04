@@ -6,11 +6,14 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo'
 import { tokenCache } from '@/lib/auth';
+import { LogBox } from 'react-native'
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+LogBox.ignoreLogs(["Clerk:", "fontFamily"])
 
 export default function RootLayout() {
  
