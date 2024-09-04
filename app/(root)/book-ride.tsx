@@ -96,7 +96,7 @@ const BookRide = () => {
           </View>
         </View>
 
-        <Payment 
+        <Payment                                                  // Este componente es un boton que inicia la pasarela de pagos de stripe
             fullName={user?.fullName!}
             email={user?.emailAddresses[0].emailAddress!}
             amount={driverDetails?.price!}

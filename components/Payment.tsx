@@ -33,10 +33,10 @@ const Payment = ({
   const [success, setSuccess] = useState<boolean>(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
-  const initializePaymentSheet = async () => {    // Configura el Payment Sheet de Stripe
+  const initializePaymentSheet = async () => {    // Configura el Payment Sheet de Stripe,
 
     const { error } = await initPaymentSheet({    // con initPaymentSheet función que recoje
-      merchantDisplayName: "Example, Inc.",       // el nombre del comerciante
+      merchantDisplayName: "Ride Inc.",       // el nombre del comerciante
       intentConfiguration: {                      // y la configuración de la intención de pago
         mode: {
           amount: parseInt(amount) * 100,
@@ -47,7 +47,7 @@ const Payment = ({
           shouldSavePaymentMethod,
           intentCreationCallback,
         ) => {
-          const { paymentIntent, customer } = await fetchAPI(     // Realiza llamadas a la API para crear la intención de pago y procesar el pago
+          const { paymentIntent, customer } = await fetchAPI(     // Realiza llamadas a la API para crear la intención de pago (paymentIntent) y procesar el pago
             "/(api)/(stripe)/create",
             {
               method: "POST",
@@ -63,8 +63,8 @@ const Payment = ({
             },
           );
 
-          if (paymentIntent.client_secret) {                            // Si el pago es exitoso se obtiene un client-secret válido
-            const { result } = await fetchAPI("/(api)/(stripe)/pay", {  // se procede a crear el registro del viaje.
+          if (paymentIntent.client_secret) {                            // Si el pago es exitoso se obtiene un client-secret válido (payment.client_secret)
+            const { result } = await fetchAPI("/(api)/(stripe)/pay", {  // se procede a crear el registro del viaje (result).
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const Payment = ({
             });
 
             if (result.client_secret) {
-              await fetchAPI("/(api)/ride/create", {  // Esta información se envía al servidor, donde se almacena en una base de datos para mantener un registro de todos los viajes realizados.
+              await fetchAPI("/(api)/ride/create", {  // Esta información (result-client_secret) se envía al servidor, donde se almacena en una base de datos para mantener un registro de todos los viajes realizados.
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const Payment = ({
                 }),
               });
 
-              intentCreationCallback({
+              intentCreationCallback({                // Este cb permite pasar a openPaymentSheet el client_secret
                 clientSecret: result.client_secret,
               });
             }
@@ -114,18 +114,16 @@ const Payment = ({
   };
 
 
-
-
-
   const openPaymentSheet = async() => {
-    await initializePaymentSheet()
+    await initializePaymentSheet()                                // Se recibe el client_secret
+    
     const {error} = await presentPaymentSheet()
-    if(error){
-      if(error.code === PaymentSheetError.Canceled){
+    
+    if(error){                                                    // Si hay error mensaje de error
         Alert.alert(`Error code: ${error.code}`, error.message)
-      }else{
-        setSuccess(true);
-      }
+    }else{
+        setSuccess(true);                                         // Si todo fue bien Success = true -> modal -> Mensaje de que el pago fue exitoso.
+        console.log("success", success);
     }
   }
 

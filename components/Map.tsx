@@ -75,20 +75,20 @@ const Map = () => {
 
   useEffect(() => {                                           // Cuando se dan permisos de geolocalización las coordenadas cambian
     const timeoutId = setTimeout(() => {
-    const newRegion = calculateRegion({                       // y este useEffect permite recalcular la región y mostralas en el mapa.
-      userLatitude,
-      userLongitude,
-      destinationLatitude,
-      destinationLongitude,
-    })
-    console.log('region',newRegion);
-    setRegion(newRegion)
+      const newRegion = calculateRegion({                     // y este useEffect permite recalcular la región y mostralas en el mapa.
+        userLatitude,
+        userLongitude,
+        destinationLatitude,
+        destinationLongitude,
+      })
+      console.log('region',newRegion);
+      setRegion(newRegion)
 
-    if (mapRef.current && newRegion) {
-      console.log('mapRef y newRegion existen');
-      mapRef.current.animateToRegion(newRegion, 1000);
-    }
-  }, 500)
+      if (mapRef.current && newRegion) {
+        console.log('mapRef y newRegion existen');
+        mapRef.current.animateToRegion(newRegion, 1000);
+      }
+    }, 500)
     return () => clearTimeout(timeoutId);
   },[userLatitude, userLongitude, destinationLatitude, destinationLongitude])
 
