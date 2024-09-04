@@ -212,7 +212,7 @@ const Home = () => {
                   Your Current Location
                 </Text>
                 <View className='flex flex-row ic bg-transparent h-[300px]'>
-                <Map />
+                  <Map />
                 </View>
               </>
 

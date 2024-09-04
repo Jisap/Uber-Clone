@@ -74,6 +74,7 @@ const Map = () => {
   } | undefined>(undefined);
 
   useEffect(() => {                                           // Cuando se dan permisos de geolocalización las coordenadas cambian
+    const timeoutId = setTimeout(() => {
     const newRegion = calculateRegion({                       // y este useEffect permite recalcular la región y mostralas en el mapa.
       userLatitude,
       userLongitude,
@@ -84,12 +85,14 @@ const Map = () => {
     setRegion(newRegion)
 
     if (mapRef.current && newRegion) {
+      console.log('mapRef y newRegion existen');
       mapRef.current.animateToRegion(newRegion, 1000);
     }
-
+  }, 500)
+    return () => clearTimeout(timeoutId);
   },[userLatitude, userLongitude, destinationLatitude, destinationLongitude])
 
-  
+
 
   useEffect(() => {
     if (Array.isArray(drivers)) {                             // Genera de forma aleatoria la posición de los drivers entorno a la del usuario
